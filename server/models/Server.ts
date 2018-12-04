@@ -2,23 +2,28 @@ import express from 'express';
 import http from 'http';
 import { SERVER_PORT, URL_DATABASE } from '../config/Environment';
 import { ManageRouter } from '../routes/ManageRouter';
-import  mongoose from 'mongoose';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+
 
 
 export default class Server{
     
     private static _instance: Server;
     private manageRouter = new ManageRouter().export();
-    public app:express.Application;
-    public port:number;
+    public app: express.Application;
+    public port: number;
     private httpServer: http.Server;
     
     private constructor(){
         this.app = express();
+        this.configureParser();
+        this.configureCors();
         this.port = SERVER_PORT;
-        this.httpServer = new http.Server(this.app);
         this.routes();
         this.configureMongo();
+        this.httpServer = new http.Server(this.app);
     }
     
     configureMongo(){
@@ -26,6 +31,15 @@ export default class Server{
             if(err) throw err;
             console.log('Base de datos conectada.');
         });
+    }
+
+    configureCors(){
+        this.app.use(cors({origin:true, credentials:true}));
+    }
+
+    configureParser(){
+        this.app.use(bodyParser.urlencoded({extended:true}));
+        this.app.use(bodyParser.json());
     }
 
     routes(){

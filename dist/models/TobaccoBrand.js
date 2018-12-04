@@ -14,3 +14,4 @@ let TobaccoBrandSchema = new Schema({
     name: { type: String, required: true },
 });
 module.exports = mongoose.model('TobaccoBrand', TobaccoBrandSchema);
+//# sourceMappingURL=TobaccoBrand.js.map

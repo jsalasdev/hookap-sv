@@ -30,3 +30,4 @@ let LocalSchema = new Schema({
     //add tobbacos
 });
 module.exports = mongoose.model('Local', LocalSchema);
+//# sourceMappingURL=Local.js.map

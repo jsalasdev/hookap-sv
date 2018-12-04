@@ -6,8 +6,10 @@ let validateTypeProfile = {
     message: '{VALUE} no es un rol válido'
 };
 const UserSchema = new mongoose_1.Schema({
+    name: String,
     email: String,
-    idFacebook: Number,
+    facebookProvider: String,
+    firstLogin: { type: Boolean, default: true },
     userType: { type: String, default: 'TYPE_SOCIAL', enum: validateTypeProfile },
     createdAt: { type: Date, default: Date.now },
     state: { type: Boolean, default: true },
@@ -23,3 +25,4 @@ UserSchema.methods.toJSON = function () {
     return obj;
 };
 exports.default = mongoose_1.model('User', UserSchema);
+//# sourceMappingURL=User.js.map

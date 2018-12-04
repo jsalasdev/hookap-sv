@@ -18,6 +18,12 @@ exports.TOKEN_EXPIRATION = 60 * 60 * 24 * 30;
 //=================================
 exports.SEED = process.env["SEED"] || 'my-secret-dev';
 //=================================
+// FACEBOOK PROVIDER
+//=================================
+exports.FACEBOOK_APP_ID = process.env["FACEBOOK_APP_ID"] || 2258510817725939;
+exports.FACEBOOK_APP_SECRET = process.env["FACEBOOK_APP_SECRET"] || '311de2eaaefd25371885c5d8991e71b1';
+exports.FACEBOOK_ENDPOINT_VERIFY = 'https://graph.accountkit.com/v1.0/me/?access_token=';
+//=================================
 // DATABASE
 //=================================
 exports.URL_DATABASE = '';
@@ -27,3 +33,4 @@ if (exports.NODE_ENV === 'dev') {
 else {
     exports.URL_DATABASE = process.env["MONGO_URI"] || '';
 }
+//# sourceMappingURL=Environment.js.map

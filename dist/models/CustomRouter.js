@@ -12,3 +12,4 @@ exports.CustomRouter = CustomRouter;
 module.exports = {
     CustomRouter
 };
+//# sourceMappingURL=CustomRouter.js.map

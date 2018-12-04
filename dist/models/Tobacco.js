@@ -16,3 +16,4 @@ let TobaccoSchema = new Schema({
     brand: { type: Schema.Types.ObjectId, ref: 'TobaccoBrand', required: true }
 });
 module.exports = mongoose.model('Tobacco', TobaccoSchema);
+//# sourceMappingURL=Tobacco.js.map

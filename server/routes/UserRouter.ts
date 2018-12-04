@@ -10,18 +10,40 @@ export class UserRouter extends CustomRouter {
     }
     
     registerRoutes(){
-        this.router.get('/',this.getUsers);
+        this.router.get('/:id',this.getUserById);
     }
     
-    getUsers = (req: Request, res: Response) => {
+    getUserById = (req: Request, res: Response) => {
+        let id:any = req.params.id;
+        if(!id){
+            return res.status(400).json({
+                ok:false,
+                error: 'User id expected.'
+            });
+        }
         
-        let user = new User({
-            email: 'dasdas'
-        });
+        User.findById(id)
+        .exec((err, user) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
 
-        res.json({
-            ok: true,
-            user
+            if (!user) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: 'User not exists.'
+                    }
+                });
+            }
+
+            res.json({
+                ok: true,
+                user
+            });
         });
     }
 

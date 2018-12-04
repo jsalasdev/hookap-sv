@@ -1,0 +1,1 @@
+{"version":3,"file":"CustomRouter.js","sourceRoot":"","sources":["../../server/models/CustomRouter.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AAEjC,MAAsB,YAAY;IAIhC;QAIA,8DAA8D;QAC9D,WAAM,GAAG,GAAW,EAAE,CAAC,IAAI,CAAC,MAAM,CAAC;QAJjC,IAAI,CAAC,MAAM,GAAG,gBAAM,EAAE,CAAC;IACzB,CAAC;CAIF;AAVD,oCAUC;AAED,MAAM,CAAC,OAAO,GAAG;IACf,YAAY;CACb,CAAA"}
