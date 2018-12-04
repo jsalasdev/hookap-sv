@@ -1,7 +1,8 @@
 import express from 'express';
 import http from 'http';
-import { SERVER_PORT } from '../config/Environment';
+import { SERVER_PORT, URL_DATABASE } from '../config/Environment';
 import { ManageRouter } from '../routes/ManageRouter';
+import  mongoose from 'mongoose';
 
 
 export default class Server{
@@ -17,8 +18,16 @@ export default class Server{
         this.port = SERVER_PORT;
         this.httpServer = new http.Server(this.app);
         this.routes();
+        this.configureMongo();
     }
     
+    configureMongo(){
+        mongoose.connect(URL_DATABASE, { useNewUrlParser:true }, (err) => {
+            if(err) throw err;
+            console.log('Base de datos conectada.');
+        });
+    }
+
     routes(){
         this.app.use('/api',this.manageRouter);
     }

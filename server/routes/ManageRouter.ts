@@ -1,10 +1,10 @@
 
 import { CustomRouter } from '../models/CustomRouter';
-import { User } from './user';
+import { UserRouter } from './UserRouter';
 
 export class ManageRouter extends CustomRouter{
     
-    private userRoutes =  new User().export();
+    private userRoutes =  new UserRouter().export();
     
     constructor(){
         super();
@@ -15,7 +15,7 @@ export class ManageRouter extends CustomRouter{
         this.router.use('/users',this.userRoutes);
         this.router.get('/', function(_, res) {
             res.header('Content-Type', 'text/plain');
-            res.json('The API is working!');
+            res.json('The API is working, but not for you ): !');
         });
     }
     
