@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { FACEBOOK_ENDPOINT_VERIFY, FACEBOOK_APP_ID, SEED, TOKEN_EXPIRATION, FACEBOOK_APP_SECRET, URL_DATABASE, FACEBOOK_ENDPOINT_DATA } from '../config/Environment';
 import * as axios from 'axios';
 import User from '../models/User';
-import jwt from 'jsonwebtoken';
+import { generateToken } from '../middlewares/Authentication';
 
 async function updateUserProfile(accessToken:string) {
     try{
@@ -15,7 +15,6 @@ async function updateUserProfile(accessToken:string) {
 }
 
 export class AuthRouter extends CustomRouter {
-    
     constructor() {
         super();
         this.registerRoutes();
@@ -23,12 +22,6 @@ export class AuthRouter extends CustomRouter {
     
     registerRoutes(){
         this.router.post('/', this.authWithFacebook);
-    }
-    
-    generateToken(user:any){
-        return jwt.sign({
-            user
-        }, SEED, {expiresIn: TOKEN_EXPIRATION});
     }
     
     //Modificar en el futuro: crear un verify para facebook y desacoplar logica de la ruta
@@ -78,7 +71,7 @@ export class AuthRouter extends CustomRouter {
                                 return res.json({
                                     ok: true,
                                     user: userDB,
-                                    token: this.generateToken(userDB)
+                                    token: generateToken(userDB)
                                 });
                             });
                         }).catch(err => {
@@ -93,7 +86,7 @@ export class AuthRouter extends CustomRouter {
                             return res.json({
                                 ok: true,
                                 user,
-                                token: this.generateToken(user)
+                                token: generateToken(user)
                             });
                     }
                 });

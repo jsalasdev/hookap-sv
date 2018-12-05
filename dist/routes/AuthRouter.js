@@ -22,7 +22,7 @@ const CustomRouter_1 = require("../models/CustomRouter");
 const Environment_1 = require("../config/Environment");
 const axios = __importStar(require("axios"));
 const User_1 = __importDefault(require("../models/User"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const Authentication_1 = require("../middlewares/Authentication");
 function updateUserProfile(accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -85,7 +85,7 @@ class AuthRouter extends CustomRouter_1.CustomRouter {
                                     return res.json({
                                         ok: true,
                                         user: userDB,
-                                        token: this.generateToken(userDB)
+                                        token: Authentication_1.generateToken(userDB)
                                     });
                                 });
                             }).catch(err => {
@@ -101,7 +101,7 @@ class AuthRouter extends CustomRouter_1.CustomRouter {
                             return res.json({
                                 ok: true,
                                 user,
-                                token: this.generateToken(user)
+                                token: Authentication_1.generateToken(user)
                             });
                         }
                     });
@@ -128,11 +128,6 @@ class AuthRouter extends CustomRouter_1.CustomRouter {
     }
     registerRoutes() {
         this.router.post('/', this.authWithFacebook);
-    }
-    generateToken(user) {
-        return jsonwebtoken_1.default.sign({
-            user
-        }, Environment_1.SEED, { expiresIn: Environment_1.TOKEN_EXPIRATION });
     }
 }
 exports.AuthRouter = AuthRouter;
