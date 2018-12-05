@@ -12,7 +12,7 @@ exports.NODE_ENV = process.env["NODE_ENV"] || 'dev';
 // TOKEN EXPIRES
 //=================================
 //60segs * 60min * 24h * 30 days
-exports.TOKEN_EXPIRATION = 60 * 60 * 24 * 30;
+exports.TOKEN_EXPIRATION = '48h';
 //=================================
 // SEED TOKEN
 //=================================
@@ -22,7 +22,10 @@ exports.SEED = process.env["SEED"] || 'my-secret-dev';
 //=================================
 exports.FACEBOOK_APP_ID = process.env["FACEBOOK_APP_ID"] || 2258510817725939;
 exports.FACEBOOK_APP_SECRET = process.env["FACEBOOK_APP_SECRET"] || '311de2eaaefd25371885c5d8991e71b1';
-exports.FACEBOOK_ENDPOINT_VERIFY = 'https://graph.accountkit.com/v1.0/me/?access_token=';
+// /debug_token?input_token=DASDASDASDAS&access_token=2258510817725939
+//https://graph.facebook.com/debug_token?input_token={token-to-inspect}&access_token={app_id}|{app_secret}
+exports.FACEBOOK_ENDPOINT_VERIFY = 'https://graph.facebook.com/debug_token?';
+exports.FACEBOOK_ENDPOINT_DATA = 'https://graph.facebook.com/me?fields=email,first_name,last_name,picture&access_token=';
 //=================================
 // DATABASE
 //=================================
