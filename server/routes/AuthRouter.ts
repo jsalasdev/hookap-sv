@@ -1,8 +1,8 @@
 import { CustomRouter } from '../models/CustomRouter';
 import { Request, Response } from 'express';
-import { FACEBOOK_ENDPOINT_VERIFY, FACEBOOK_APP_ID, SEED, TOKEN_EXPIRATION, FACEBOOK_APP_SECRET, URL_DATABASE, FACEBOOK_ENDPOINT_DATA } from '../config/Environment';
+import { FACEBOOK_ENDPOINT_VERIFY, FACEBOOK_APP_ID, FACEBOOK_APP_SECRET, FACEBOOK_ENDPOINT_DATA } from '../config/Environment';
 import * as axios from 'axios';
-import User from '../models/User';
+import { UserDocument, User } from '../models/User';
 import { generateToken } from '../middlewares/Authentication';
 
 async function updateUserProfile(accessToken:string) {
@@ -40,7 +40,7 @@ export class AuthRouter extends CustomRouter {
             axios.default.get(URL)
             .then(resp => {
                 let userId:number = resp.data.data.user_id;
-                User.findOne({ providerId: userId }, (err, user) => {
+                User.findOne({ providerId: userId }, (err:any, user:UserDocument) => {
                     if (err) {
                         return res.status(500).json({
                             ok: false,
@@ -58,7 +58,7 @@ export class AuthRouter extends CustomRouter {
                                 providerId: userId,
                                 provider: 'facebook'
                             });
-                            newUser.save((err, userDB) => {
+                            newUser.save((err:any, userDB:UserDocument) => {
                                 if (err) {
                                     return res.status(500).json({
                                         ok: false,

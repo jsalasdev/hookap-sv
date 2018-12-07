@@ -3,14 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CustomRouter_1 = require("../models/CustomRouter");
 const UserRouter_1 = require("./UserRouter");
 const AuthRouter_1 = require("./AuthRouter");
+const LocalRouter_1 = require("./LocalRouter");
 class ManageRouter extends CustomRouter_1.CustomRouter {
     constructor() {
         super();
         this.userRoutes = new UserRouter_1.UserRouter().export();
         this.authRoutes = new AuthRouter_1.AuthRouter().export();
+        this.localRoutes = new LocalRouter_1.LocalRouter().export();
         this.registerRoutes();
     }
     registerRoutes() {
+        this.router.use('/locals', this.localRoutes);
         this.router.use('/users', this.userRoutes);
         this.router.use('/login', this.authRoutes);
         this.router.get('/', function (_, res) {

@@ -1,8 +1,52 @@
-import * as mongoose from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-const Schema = mongoose.Schema;
+export class ILocal {
+    createdAt: Date
+    name: string
+    availableHookahs: number
+    postalCode: number
+    lat: number
+    lng: number
+    country: string
+    locality: string
+    imgProfile: string
+    userOwner: number
+    premiumTobaccoPrice: number
+    tobaccoPrice: number
+    tobaccos:number[]
+    
+    constructor(data:{
+        createdAt: Date
+        name: string
+        availableHookahs: number
+        postalCode: number
+        lat: number
+        lng: number
+        country: string
+        locality: string
+        imgProfile: string
+        userOwner: number
+        premiumTobaccoPrice: number
+        tobaccoPrice: number
+        tobaccos:number[]
+    }){
+        this.createdAt = data.createdAt;
+        this.name = data.name;
+        this.availableHookahs = data.availableHookahs;
+        this.postalCode = data.postalCode;
+        this.lat = data.lat;
+        this.lng = data.lng;
+        this.country = data.country;
+        this.locality = data.locality;
+        this.imgProfile = data.imgProfile;
+        this.userOwner = data.userOwner;
+        this.premiumTobaccoPrice = data.premiumTobaccoPrice;
+        this.tobaccoPrice = data.tobaccoPrice;
+        this.tobaccos = data.tobaccos;
+    }
+}
 
-let LocalSchema = new Schema({
+const LocalSchema = new Schema({
     createdAt: {type: Date,default: Date.now},
     name: {type: String, required: true},
     availableHookahs: {type: Number,default: 0},
@@ -12,7 +56,7 @@ let LocalSchema = new Schema({
     country: {type: String,required:false},
     locality: {type: String,required:false},
     imgProfile: {type: String,required:false},
-    user: {
+    userOwner: {
         type: Schema.Types.ObjectId, ref: 'User',
         required: true
     },
@@ -20,7 +64,14 @@ let LocalSchema = new Schema({
         {type: Schema.Types.ObjectId, ref: 'Tobacco',
         required: false}
     ]
-    //add tobbacos
 });
 
-module.exports = mongoose.model('Local',LocalSchema);
+LocalSchema.methods.toJSON = function(){
+    let obj = this.toObject();
+    delete obj.createdAt;
+    return obj;
+}
+
+export interface LocalDocument extends ILocal, Document {}
+
+export const Local = model<LocalDocument>('Local', LocalSchema);

@@ -14,14 +14,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const CustomRouter_1 = require("../models/CustomRouter");
 const Environment_1 = require("../config/Environment");
 const axios = __importStar(require("axios"));
-const User_1 = __importDefault(require("../models/User"));
+const User_1 = require("../models/User");
 const Authentication_1 = require("../middlewares/Authentication");
 function updateUserProfile(accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -53,7 +50,7 @@ class AuthRouter extends CustomRouter_1.CustomRouter {
                 axios.default.get(URL)
                     .then(resp => {
                     let userId = resp.data.data.user_id;
-                    User_1.default.findOne({ providerId: userId }, (err, user) => {
+                    User_1.User.findOne({ providerId: userId }, (err, user) => {
                         if (err) {
                             return res.status(500).json({
                                 ok: false,
@@ -64,7 +61,7 @@ class AuthRouter extends CustomRouter_1.CustomRouter {
                         }
                         if (!user) {
                             updateUserProfile(tokenToInspect).then(data => {
-                                let newUser = new User_1.default({
+                                let newUser = new User_1.User({
                                     firstName: data.first_name,
                                     lastName: data.last_name,
                                     picture: data.picture.data.url,

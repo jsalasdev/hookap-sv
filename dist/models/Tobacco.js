@@ -1,19 +1,25 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose = __importStar(require("mongoose"));
-const Schema = mongoose.Schema;
-let TobaccoSchema = new Schema({
+const mongoose_1 = require("mongoose");
+class ITobacco {
+    constructor(data) {
+        this.name = data.name;
+        this.createdAt = data.createdAt;
+        this.isPremium = data.isPremium;
+        this.brand = data.brand;
+    }
+}
+exports.ITobacco = ITobacco;
+const TobaccoSchema = new mongoose_1.Schema({
     createdAt: { type: Date, default: Date.now },
     name: { type: String, required: true },
     isPremium: { type: Boolean, default: false, required: true },
-    brand: { type: Schema.Types.ObjectId, ref: 'TobaccoBrand', required: true }
+    brand: { type: mongoose_1.Schema.Types.ObjectId, ref: 'TobaccoBrand', required: true }
 });
-module.exports = mongoose.model('Tobacco', TobaccoSchema);
+TobaccoSchema.methods.toJSON = function () {
+    let obj = this.toObject();
+    delete obj.createdAt;
+    return obj;
+};
+exports.Tobacco = mongoose_1.model('Tobacco', TobaccoSchema);
 //# sourceMappingURL=Tobacco.js.map

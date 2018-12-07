@@ -1,7 +1,9 @@
 import { CustomRouter } from "../models/CustomRouter";
 import { Request, Response } from 'express';
-import User from '../models/User';
 import { verifyJwt } from '../middlewares/Authentication';
+import { UserDocument, User } from '../models/User';
+
+const _ = require('underscore');
 
 export class UserRouter extends CustomRouter {
     
@@ -11,44 +13,152 @@ export class UserRouter extends CustomRouter {
     }
     
     registerRoutes(){
+        this.router.get('/favorite-locals', verifyJwt, this.getFavoriteLocal);
+        this.router.delete('/favorite-locals',verifyJwt, this.deleteFavoriteLocal);
         this.router.get('/:id', verifyJwt, this.getUserById);
         this.router.post('/hookah/counter', verifyJwt, this.addHookahCounter);
+        this.router.delete('/hookah/counter', verifyJwt, this.deleteHookahCounter);
+        this.router.put('/',verifyJwt, this.updateProfile);
     }
     
-    addHookahCounter = (req: any, res: any) => {
-        let user = req.user;
-            if(user !== undefined){
-                let hookahCounter:any[] = user.hookahCounter;
-                let newCount = Date.now();
-
-                if(hookahCounter.length>0){
-                    let aux = hookahCounter[hookahCounter.length-1];
-                    console.log(Date.now()-aux.createdAt);
-                }
-
-                //ERROR HERE ********************************
-                User.findById(user._id, (err:any , user: User) => {
-                    if(err){
-                        return res.status(500).json({
-                            ok:false,
-                            error: {
-                                message: 'SERVER ERROR.'
-                            }
-                        });
-                    }else{
-                        user.hookahCounter.push(newCount);
-                        user.save
+    getFavoriteLocal = (req:any, res:any) => {
+        let user:UserDocument = req.user;
+        User.findById(user._id, { favoriteLocals: 1 }, (err, user)=>{
+            if(err){
+                return res.status(500).json({
+                    ok:false,
+                    error: {
+                        message: 'SERVER ERROR.'
                     }
                 });
             }
-            res.status(200).json({
-                ok:true,
-                error: {
-                    message: 'testing'
-                }
-             });
+            res.json({
+                ok: true,
+                user
+            });
+        });
     }
 
+    addFavoriteLocal = (req: any, res:any) => {
+        
+    }
+
+    //testear esta api
+    deleteFavoriteLocal = (req:any, res:any) => {
+        let user:UserDocument = req.user;
+        let idLocal = req.params.id_local;
+        if(idLocal){
+            User.findById(user._id, {favoriteLocals:1}, (err, user: UserDocument)=>{
+                if(err){
+                    return res.status(500).json({
+                        ok:false,
+                        error: {
+                            message: 'SERVER ERROR.'
+                        }
+                    });
+                }
+                
+                let local = user.favoriteLocals.find( aux => aux == idLocal );
+
+                res.json ({
+                    res: local
+                });
+    
+    
+            });
+        }else{
+            return res.json({
+                ok: false,
+                error:{
+                    message: "Id local expected."
+                }
+            });
+        }
+    }
+    
+    addHookahCounter = (req: any, res: any) => {
+        let user:UserDocument = req.user;
+        if(user !== undefined){
+            User.findById(user._id, (err:any , user:UserDocument) => {
+                if(err){
+                    return res.status(500).json({
+                        ok:false,
+                        error: {
+                            message: 'SERVER ERROR.'
+                        }
+                    });
+                }else{
+                    user.hookahCounter++;
+                    User.updateOne(user, (err:any, u:UserDocument) => {
+                        res.status(200).json({
+                            ok:true,
+                            error: {
+                                ok:true,
+                                user
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    }
+    
+    deleteHookahCounter = (req: any, res: any) => {
+        let user:UserDocument = req.user;
+        if(user !== undefined){
+            User.findById(user._id, (err:any , user:UserDocument) => {
+                if(err){
+                    return res.status(500).json({
+                        ok:false,
+                        error: {
+                            message: 'SERVER ERROR.'
+                        }
+                    });
+                }else{
+                    if(user.hookahCounter > 0){
+                        user.hookahCounter--;
+                        User.updateOne(user, (err:any, u:UserDocument) => {
+                            res.status(200).json({
+                                ok:true,
+                                error: {
+                                    ok:true,
+                                    user
+                                }
+                            });
+                        });
+                    }else{
+                        res.status(200).json({
+                            ok:true,
+                            error: {
+                                ok:true,
+                                user
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+    
+    updateProfile = (req: any, res: any) => {
+        let user:UserDocument = req.user;
+        let body = _.pick(req.body, ['userType']);
+        User.findByIdAndUpdate(user._id, body, {new: true, runValidators:true}, (err, updatedUser) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    error: {
+                        message: 'SERVER ERROR.'
+                    }
+                });
+            }
+            res.json({
+                ok: true,
+                user: updatedUser
+            });
+        });
+    }
+    
     getUserById = (req: Request, res: Response) => {
         let id:any = req.params.id;
         if(!id){
@@ -61,7 +171,7 @@ export class UserRouter extends CustomRouter {
         }
         
         User.findById(id)
-        .exec((err, user) => {
+        .exec((err:any, user:UserDocument) => {
             if (err || !user) {
                 return res.status(400).json({
                     ok: false,
