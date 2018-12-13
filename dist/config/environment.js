@@ -25,7 +25,7 @@ exports.FACEBOOK_APP_SECRET = process.env["FACEBOOK_APP_SECRET"] || '311de2eaaef
 // /debug_token?input_token=DASDASDASDAS&access_token=2258510817725939
 //https://graph.facebook.com/debug_token?input_token={token-to-inspect}&access_token={app_id}|{app_secret}
 exports.FACEBOOK_ENDPOINT_VERIFY = 'https://graph.facebook.com/debug_token?';
-exports.FACEBOOK_ENDPOINT_DATA = 'https://graph.facebook.com/me?fields=email,first_name,last_name,picture&access_token=';
+exports.FACEBOOK_ENDPOINT_DATA = 'https://graph.facebook.com/me?fields=email,first_name,last_name,picture.type(normal)&access_token=';
 //=================================
 // DATABASE
 //=================================

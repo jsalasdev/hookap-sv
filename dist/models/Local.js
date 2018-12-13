@@ -6,13 +6,9 @@ class ILocal {
         this.createdAt = data.createdAt;
         this.name = data.name;
         this.availableHookahs = data.availableHookahs;
-        this.postalCode = data.postalCode;
-        this.lat = data.lat;
-        this.lng = data.lng;
-        this.country = data.country;
-        this.locality = data.locality;
-        this.imgProfile = data.imgProfile;
+        this.picture = data.picture;
         this.userOwner = data.userOwner;
+        this.location = data.location;
         this.premiumTobaccoPrice = data.premiumTobaccoPrice;
         this.tobaccoPrice = data.tobaccoPrice;
         this.tobaccos = data.tobaccos;
@@ -23,12 +19,14 @@ const LocalSchema = new mongoose_1.Schema({
     createdAt: { type: Date, default: Date.now },
     name: { type: String, required: true },
     availableHookahs: { type: Number, default: 0 },
-    postalCode: { type: String, required: false },
-    lat: { type: Number, required: true },
-    lng: { type: Number, required: true },
-    country: { type: String, required: false },
-    locality: { type: String, required: false },
-    imgProfile: { type: String, required: false },
+    picture: { type: String, required: false },
+    location: {
+        description: String,
+        latLng: {
+            lat: Number,
+            lng: Number
+        }
+    },
     userOwner: {
         type: mongoose_1.Schema.Types.ObjectId, ref: 'User',
         required: true

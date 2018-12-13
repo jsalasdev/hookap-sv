@@ -28,11 +28,13 @@ export class AuthRouter extends CustomRouter {
     //Crear un base para los errores
     authWithFacebook = (req: Request, res: Response) => {
         let body = req.body;
-        
+        console.log(req.body);
         if(body === undefined || (body.access_token === undefined || body.access_token === '')){
             return res.status(400).json({
                 ok:false,
-                error: 'Incorrect access token'
+                error: {
+                    message: 'Incorrect access token'
+                }
             });
         }else{
             let tokenToInspect = body.access_token;

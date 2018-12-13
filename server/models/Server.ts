@@ -34,16 +34,16 @@ export default class Server{
     }
 
     configureCors(){
-        this.app.use(cors({origin:true, credentials:true}));
+        this.app.use(cors({origin: true, credentials: true}));
     }
 
     configureParser(){
-        this.app.use(bodyParser.urlencoded({extended:true}));
+        this.app.use(bodyParser.urlencoded({ extended:true }));
         this.app.use(bodyParser.json());
     }
 
     routes(){
-        this.app.use('/api',this.manageRouter);
+        this.app.use('/api', this.manageRouter);
     }
     
     public static get instance(){

@@ -13,7 +13,7 @@ export class IUser {
     picture: string
     hookahCounter: number
     favoriteLocals:number[]
-
+    
     constructor(data: {
         firstName: string
         lastName: string
@@ -41,11 +41,11 @@ export class IUser {
         this.hookahCounter = data.hookahCounter;
         this.favoriteLocals = data.favoriteLocals;
     }
-
+    
     // foo(): string {
     //     return this.name.uppercase() // whatever
     //  }
-
+    
 }
 
 const validateTypeProfile = {
@@ -68,7 +68,8 @@ const UserSchema: Schema = new Schema({
     //probablemente tengan que ser únicos
     favoriteLocals: [
         {type: Schema.Types.ObjectId, ref: 'Local',
-        required: false}
+        required: false,
+        unique: true}
     ]
 });
 

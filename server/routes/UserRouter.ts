@@ -15,6 +15,7 @@ export class UserRouter extends CustomRouter {
     registerRoutes(){
         this.router.get('/favorite-locals', verifyJwt, this.getFavoriteLocal);
         this.router.delete('/favorite-locals',verifyJwt, this.deleteFavoriteLocal);
+        this.router.post('/favorite-locals',verifyJwt, this.addFavoriteLocal);
         this.router.get('/:id', verifyJwt, this.getUserById);
         this.router.post('/hookah/counter', verifyJwt, this.addHookahCounter);
         this.router.delete('/hookah/counter', verifyJwt, this.deleteHookahCounter);
@@ -38,16 +39,12 @@ export class UserRouter extends CustomRouter {
             });
         });
     }
-
+    
     addFavoriteLocal = (req: any, res:any) => {
-        
-    }
-
-    //testear esta api
-    deleteFavoriteLocal = (req:any, res:any) => {
         let user:UserDocument = req.user;
-        let idLocal = req.params.id_local;
+        let idLocal = req.query.id;
         if(idLocal){
+            
             User.findById(user._id, {favoriteLocals:1}, (err, user: UserDocument)=>{
                 if(err){
                     return res.status(500).json({
@@ -58,13 +55,99 @@ export class UserRouter extends CustomRouter {
                     });
                 }
                 
-                let local = user.favoriteLocals.find( aux => aux == idLocal );
-
-                res.json ({
-                    res: local
-                });
+                let localExists = user.favoriteLocals.find(x => x == idLocal);
+                if(localExists){
+                    return res.status(500).json({
+                        ok: false,
+                        error: {
+                            message: 'Este local ya es favorito'
+                        }
+                    });
+                }else{
+                    user.favoriteLocals.push(idLocal);
+                    User.updateOne(user, (err:any, u:UserDocument) => {
+                        
+                        if(err){
+                            return res.status(500).json({
+                                ok:false,
+                                error: {
+                                    message: 'SERVER ERROR.'
+                                }
+                            });
+                        }
+                        
+                        res.status(200).json({
+                            ok:true,
+                            error: {
+                                ok:true,
+                                user
+                            }
+                        });
+                    });
+                }
+            });
+        }else{
+            return res.json({
+                ok: false,
+                error:{
+                    message: "Id local expected."
+                }
+            });
+        }
+    }
     
-    
+    //APLICAR DELETE ON CASCADE
+    deleteFavoriteLocal = (req:any, res:any) => {
+        let user:UserDocument = req.user;
+        let idLocal = req.query.id;
+        if(idLocal){
+            
+            User.findById(user._id, {favoriteLocals:1}, (err, user: UserDocument)=>{
+                if(err){
+                    return res.status(500).json({
+                        ok:false,
+                        error: {
+                            message: 'SERVER ERROR.'
+                        }
+                    });
+                }
+                
+                let localExists = user.favoriteLocals.find(x => x == idLocal);
+                if(localExists){
+                    return res.status(500).json({
+                        ok: false,
+                        error: {
+                            message: 'Este local ya es favorito'
+                        }
+                    });
+                }else{
+                    let updatedLocals:number[] = [];
+                    for(let i in user.favoriteLocals){
+                        if(Number(i) !== localExists){
+                            updatedLocals.push(Number(i));
+                        }
+                    }
+                    user.favoriteLocals = updatedLocals;
+                    User.updateOne(user, (err:any, u:UserDocument) => {
+                        
+                        if(err){
+                            return res.status(500).json({
+                                ok:false,
+                                error: {
+                                    message: 'SERVER ERROR.'
+                                }
+                            });
+                        }
+                        
+                        res.status(200).json({
+                            ok:true,
+                            error: {
+                                ok:true,
+                                user
+                            }
+                        });
+                    });
+                }
             });
         }else{
             return res.json({
