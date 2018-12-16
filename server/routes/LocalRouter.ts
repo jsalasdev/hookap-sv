@@ -2,6 +2,7 @@ import { CustomRouter } from "../models/CustomRouter";
 import { verifyJwt } from '../middlewares/Authentication';
 import { LocalDocument, Local } from '../models/Local';
 import { UserDocument } from '../models/User';
+import { getAddress } from '../utils/AddressUtil';
 
 const _ = require('underscore');
 
@@ -15,6 +16,7 @@ export class LocalRouter extends CustomRouter {
     }
     
     registerRoutes(){
+        this.router.get('/locations', verifyJwt, this.getAllLocalsByLocation);
         this.router.get('/',verifyJwt, this.getMyLocals);
         this.router.post('/', verifyJwt, this.addLocal);
         this.router.get('/:id', verifyJwt, this.getLocalById);
@@ -51,7 +53,11 @@ export class LocalRouter extends CustomRouter {
             premiumTobaccoPrice: body.premiumTobaccoPrice,
             tobaccoPrice: body.tobaccoPrice,
             tobaccos: body.tobaccos,
-            location: body.location
+            location: {
+                description: body.location.description,
+                type: 'Point',
+                coordinates: [body.location.latLng.lat,body.location.latLng.lng]
+            }
         });
         
         local.save((err: any, local:LocalDocument) => {
@@ -69,6 +75,50 @@ export class LocalRouter extends CustomRouter {
             });
         });
         
+    }
+    
+    getAllLocalsByLocation = (req:any, res:any) => {
+        
+        let latitude = req.query.latitude;
+        let longitude = req.query.longitude;
+        let radius = req.query.radius;
+        
+        if(latitude && longitude && radius){
+            let address:number[] = getAddress(latitude, longitude, radius);
+            console.log(address);
+            Local.find({
+                $and: [{
+                    "location": {
+                        "$geoWithin": {
+                            "$center": [[latitude, longitude] ,300/6378.1]
+                        }
+                    }
+                },{
+                    "status": "ACCEPTED"
+                }
+            ]}).exec((err, locals) =>{
+                if(err){
+                    console.log(err);
+                    return res.status(500).json({
+                        ok:false,
+                        error: {
+                            message: 'SERVER ERROR.'
+                        }
+                    });
+                }
+                res.json({
+                    ok: true,
+                    locals
+                })
+            });
+        }else{
+            return res.status(400).json({
+                ok: false,
+                error: {
+                    message: 'Inserta los parámetros esperados'
+                }
+            });        
+        }
     }
     
     getLocalById = (req: any, res:any) => {

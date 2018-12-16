@@ -9,7 +9,10 @@ class UserRouter extends CustomRouter_1.CustomRouter {
         super();
         this.getFavoriteLocal = (req, res) => {
             let user = req.user;
-            User_1.User.findById(user._id, { favoriteLocals: 1 }, (err, user) => {
+            User_1.User.findById(user._id, { favoriteLocals: 1 })
+                .populate('favoriteLocals')
+                .exec((err, user) => {
+                console.log(err);
                 if (err) {
                     return res.status(500).json({
                         ok: false,

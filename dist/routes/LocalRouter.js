@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CustomRouter_1 = require("../models/CustomRouter");
 const Authentication_1 = require("../middlewares/Authentication");
 const Local_1 = require("../models/Local");
+const AddressUtil_1 = require("../utils/AddressUtil");
 const _ = require('underscore');
 class LocalRouter extends CustomRouter_1.CustomRouter {
     constructor() {
@@ -35,7 +36,11 @@ class LocalRouter extends CustomRouter_1.CustomRouter {
                 premiumTobaccoPrice: body.premiumTobaccoPrice,
                 tobaccoPrice: body.tobaccoPrice,
                 tobaccos: body.tobaccos,
-                location: body.location
+                location: {
+                    description: body.location.description,
+                    type: 'Point',
+                    coordinates: [body.location.latLng.lat, body.location.latLng.lng]
+                }
             });
             local.save((err, local) => {
                 if (err) {
@@ -52,6 +57,49 @@ class LocalRouter extends CustomRouter_1.CustomRouter {
                     local
                 });
             });
+        };
+        this.getAllLocalsByLocation = (req, res) => {
+            let latitude = req.query.latitude;
+            let longitude = req.query.longitude;
+            let radius = req.query.radius;
+            if (latitude && longitude && radius) {
+                let address = AddressUtil_1.getAddress(latitude, longitude, radius);
+                console.log(address);
+                Local_1.Local.find({
+                    $and: [{
+                            "location": {
+                                "$geoWithin": {
+                                    "$center": [[latitude, longitude], 300 / 6378.1]
+                                }
+                            }
+                        }, {
+                            "status": "ACCEPTED"
+                        }
+                    ]
+                }).exec((err, locals) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({
+                            ok: false,
+                            error: {
+                                message: 'SERVER ERROR.'
+                            }
+                        });
+                    }
+                    res.json({
+                        ok: true,
+                        locals
+                    });
+                });
+            }
+            else {
+                return res.status(400).json({
+                    ok: false,
+                    error: {
+                        message: 'Inserta los parámetros esperados'
+                    }
+                });
+            }
         };
         this.getLocalById = (req, res) => {
             let id = req.params.id;
@@ -179,6 +227,7 @@ class LocalRouter extends CustomRouter_1.CustomRouter {
         this.registerRoutes();
     }
     registerRoutes() {
+        this.router.get('/locations', Authentication_1.verifyJwt, this.getAllLocalsByLocation);
         this.router.get('/', Authentication_1.verifyJwt, this.getMyLocals);
         this.router.post('/', Authentication_1.verifyJwt, this.addLocal);
         this.router.get('/:id', Authentication_1.verifyJwt, this.getLocalById);

@@ -24,7 +24,10 @@ export class UserRouter extends CustomRouter {
     
     getFavoriteLocal = (req:any, res:any) => {
         let user:UserDocument = req.user;
-        User.findById(user._id, { favoriteLocals: 1 }, (err, user)=>{
+        User.findById(user._id, { favoriteLocals: 1 })
+        .populate('favoriteLocals')
+        .exec((err, user) => {
+            console.log(err);
             if(err){
                 return res.status(500).json({
                     ok:false,

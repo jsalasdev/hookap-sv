@@ -12,9 +12,14 @@ class ILocal {
         this.premiumTobaccoPrice = data.premiumTobaccoPrice;
         this.tobaccoPrice = data.tobaccoPrice;
         this.tobaccos = data.tobaccos;
+        this.status = data.status;
     }
 }
 exports.ILocal = ILocal;
+const validateLocalStatus = {
+    values: ['PROCESSING', 'ACCEPTED', 'DELETED'],
+    message: '{VALUE} no es un estado válido'
+};
 const LocalSchema = new mongoose_1.Schema({
     createdAt: { type: Date, default: Date.now },
     name: { type: String, required: true },
@@ -22,10 +27,13 @@ const LocalSchema = new mongoose_1.Schema({
     picture: { type: String, required: false },
     location: {
         description: String,
-        latLng: {
-            lat: Number,
-            lng: Number
-        }
+        type: {
+            type: "String",
+            required: true,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: [Number]
     },
     userOwner: {
         type: mongoose_1.Schema.Types.ObjectId, ref: 'User',
@@ -34,8 +42,12 @@ const LocalSchema = new mongoose_1.Schema({
     tobaccos: [
         { type: mongoose_1.Schema.Types.ObjectId, ref: 'Tobacco',
             required: false }
-    ]
+    ],
+    premiumTobaccoPrice: { type: Number },
+    tobaccoPrice: { type: Number },
+    status: { type: String, default: 'PROCESSING', enum: validateLocalStatus }
 });
+LocalSchema.index({ 'location': '2dsphere' });
 LocalSchema.methods.toJSON = function () {
     let obj = this.toObject();
     delete obj.createdAt;
