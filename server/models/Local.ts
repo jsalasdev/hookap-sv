@@ -1,5 +1,4 @@
 import { Schema, model, Document } from 'mongoose';
-import { Double } from 'mongodb';
 
 export class ILocal {
     createdAt: Date
@@ -21,6 +20,11 @@ export class ILocal {
     tobaccoPrice: number
     tobaccos:number[]
     status:string
+    isPremium: boolean
+    localSpace:number
+    hasAirConditioner:boolean
+    hasSoccer:boolean
+    hasMusic:boolean
     
     constructor(data:{
         createdAt: Date
@@ -42,6 +46,11 @@ export class ILocal {
         tobaccoPrice: number
         tobaccos:number[]
         status:string
+        isPremium: boolean
+        localSpace:number
+        hasAirConditioner:boolean
+        hasSoccer:boolean
+        hasMusic:boolean
     }){
         this.createdAt = data.createdAt;
         this.name = data.name;
@@ -53,6 +62,11 @@ export class ILocal {
         this.tobaccoPrice = data.tobaccoPrice;
         this.tobaccos = data.tobaccos;
         this.status = data.status;
+        this.isPremium = data.isPremium;
+        this.localSpace = data.localSpace;
+        this.hasAirConditioner = data.hasAirConditioner;
+        this.hasSoccer = data.hasSoccer;
+        this.hasMusic = data.hasMusic;
     }
 }
 
@@ -86,14 +100,14 @@ const LocalSchema = new Schema({
     ],
     premiumTobaccoPrice: {type: Number},
     tobaccoPrice: {type: Number},
-    status: { type: String, default: 'PROCESSING', enum: validateLocalStatus }
+    status: { type: String, default: 'PROCESSING', enum: validateLocalStatus },
+    isPremium: { type: Boolean, default: false },
+    localSpace: {type: Number},
+    hasAirConditioner: { type: Boolean, default: false },
+    hasSoccer: { type: Boolean, default: false },
+    hasMusic: { type: Boolean, default: false },
 });
 LocalSchema.index({'location': '2dsphere'});
-LocalSchema.methods.toJSON = function(){
-    let obj = this.toObject();
-    delete obj.createdAt;
-    return obj;
-}
 
 export interface LocalDocument extends ILocal, Document {}
 

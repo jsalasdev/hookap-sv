@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { SEED, TOKEN_EXPIRATION } from '../config/Environment';
 
 export let verifyJwt = (req: any, res: Response, next:any) => {
-    
     let token:string = req.get('token') || '';
     if(token === ''){
         return res.status(401).json({
@@ -31,5 +30,6 @@ export let verifyJwt = (req: any, res: Response, next:any) => {
 export let generateToken = (user:any)=>{
     return jwt.sign({
         user
-    }, SEED, {expiresIn: TOKEN_EXPIRATION});
+    }, SEED);
+// }, SEED, {expiresIn: TOKEN_EXPIRATION});
 };

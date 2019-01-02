@@ -33,6 +33,7 @@ exports.verifyJwt = (req, res, next) => {
 exports.generateToken = (user) => {
     return jsonwebtoken_1.default.sign({
         user
-    }, Environment_1.SEED, { expiresIn: Environment_1.TOKEN_EXPIRATION });
+    }, Environment_1.SEED);
+    // }, SEED, {expiresIn: TOKEN_EXPIRATION});
 };
 //# sourceMappingURL=Authentication.js.map

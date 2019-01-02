@@ -5,7 +5,6 @@ class ITobacco {
     constructor(data) {
         this.name = data.name;
         this.createdAt = data.createdAt;
-        this.isPremium = data.isPremium;
         this.brand = data.brand;
     }
 }
@@ -13,7 +12,6 @@ exports.ITobacco = ITobacco;
 const TobaccoSchema = new mongoose_1.Schema({
     createdAt: { type: Date, default: Date.now },
     name: { type: String, required: true },
-    isPremium: { type: Boolean, default: false, required: true },
     brand: { type: mongoose_1.Schema.Types.ObjectId, ref: 'TobaccoBrand', required: true }
 });
 TobaccoSchema.methods.toJSON = function () {

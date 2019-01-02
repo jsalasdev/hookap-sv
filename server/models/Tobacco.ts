@@ -3,18 +3,15 @@ import { Schema, model, Document } from 'mongoose';
 export class ITobacco {
     createdAt: Date
     name: string
-    isPremium: boolean
     brand: number
     
     constructor( data:{
         createdAt: Date
         name: string
-        isPremium: boolean
         brand: number
     }){
         this.name = data.name;
         this.createdAt = data.createdAt;
-        this.isPremium = data.isPremium;
         this.brand = data.brand;
     }
 }
@@ -22,7 +19,6 @@ export class ITobacco {
 const TobaccoSchema = new Schema({
     createdAt: {type: Date,default: Date.now},
     name: {type: String, required: true},
-    isPremium: { type: Boolean, default: false, required:true},
     brand: { type: Schema.Types.ObjectId, ref: 'TobaccoBrand', required: true}
 });
 

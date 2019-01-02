@@ -85,6 +85,7 @@ class AuthRouter extends CustomRouter_1.CustomRouter {
                                     return res.json({
                                         ok: true,
                                         user: userDB,
+                                        isNew: true,
                                         token: Authentication_1.generateToken(userDB)
                                     });
                                 });

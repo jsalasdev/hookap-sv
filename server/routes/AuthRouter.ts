@@ -73,6 +73,7 @@ export class AuthRouter extends CustomRouter {
                                 return res.json({
                                     ok: true,
                                     user: userDB,
+                                    isNew: true,
                                     token: generateToken(userDB)
                                 });
                             });

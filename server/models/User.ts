@@ -68,8 +68,7 @@ const UserSchema: Schema = new Schema({
     //probablemente tengan que ser únicos
     favoriteLocals: [
         {type: Schema.Types.ObjectId, ref: 'Local',
-        required: false,
-        unique: true}
+        required: false}
     ]
 });
 
